@@ -32,8 +32,7 @@ sp = spotipy.Spotify(auth=token)
 
 playlists = [{"playlist_id": '5ylrlfh6RzjgqA1lGjs7Cs', "output_name": "eng_features.xlsx"},
              {"playlist_id": '3k5BdcCPKDsLx8gnUlRLIY', "output_name": "kor_features.xlsx"},
-             {"playlist_id": '2l0yjtIHDxmTioYS1GvpaS', "output_name": "chi_features.xlsx"},
-             {"playlist_id": '1eOXdhzPYvU9cdccbJGSgt', "output_name": "test_xw.xlsx"}]
+             {"playlist_id": '2l0yjtIHDxmTioYS1GvpaS', "output_name": "chi_features.xlsx"}]
 
 for pl_i, item in enumerate(playlists):
     df_main = pd.DataFrame()
