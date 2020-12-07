@@ -4,9 +4,13 @@ import eyed3
 import ffmpeg
 import os
 import pyautogui as pag
+import requests
 import shutil
 import time
 import youtube_dl
+
+from io import BytesIO
+from PIL import Image
 
 class mp3downloader:
 
@@ -20,21 +24,23 @@ class mp3downloader:
         # Download parameters
         self.ydl_opts = {
             'format': 'bestaudio/best',
-            'postprocessors': [{
-                'key': 'FFmpegExtractAudio',
-                'preferredcodec': 'mp3',
-                'preferredquality': '320',
-            }],
+            'postprocessors': [
+                {
+                    'key': 'FFmpegExtractAudio',
+                    'preferredcodec': 'mp3',
+                    'preferredquality': '320',
+                },
+            ],
         }
 
     def download(self):
 
         while True:
             main_cmd = input('Continue? [y/n] ')
-            if main_cmd.lower() == 'n':
+            if main_cmd.strip().lower() == 'n':
                 print('Finished downloading...')
                 return
-            elif main_cmd.lower() == 'y':
+            elif main_cmd.strip().lower() == 'y':
                 pass
             else:
                 print('CommandError: Invalid Input Command!')
@@ -43,6 +49,10 @@ class mp3downloader:
             # Collecting download url and file name from user
             url_input = input('YouTube URL: ')
             file_name = input('File Name [<artist> - <title>]: ') + '.mp3'
+
+            # Clean youtube url
+            if '&' in url_input:
+                url_input = url_input.split('&')[0]
 
             artist = file_name.split(' - ')[0]
             title = file_name.split(' - ')[1][:-4]
@@ -70,6 +80,14 @@ class mp3downloader:
             audio.tag.artist = artist
             audio.tag.title = title
 
+            url = r'https://i3.ytimg.com/vi/' + youtube_uri + '/maxresdefault.jpg'
+            response = requests.get(url)
+            cover_art = response.content
+
+            audio.tag.images.set(3,
+                                 img_data=cover_art,
+                                 mime_type='image/jpeg')
+
             audio.tag.save()
 
     def normalize(self):
@@ -84,7 +102,7 @@ class mp3downloader:
 
             os.rename(src, dest)
 
-        for name in self.tempName:
+        for i, name in enumerate(self.tempName):
             pag.click(20, 1060)
             time.sleep(1)
 
@@ -96,9 +114,10 @@ class mp3downloader:
             time.sleep(1)
 
             # Select file
-            pag.click(500, 95)
-            pag.typewrite([char for char in self.root_dir] + ['enter'], interval=0.1)
-            time.sleep(.5)
+            if i == 0:
+                pag.click(500, 95)
+                pag.typewrite([char for char in self.root_dir] + ['enter'], interval=0.1)
+                time.sleep(.5)
 
             pag.click(330, 530)
             pag.typewrite([char for char in name] + ['enter'], interval=0.1)
