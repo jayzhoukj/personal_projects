@@ -9,9 +9,6 @@ import shutil
 import time
 import youtube_dl
 
-from io import BytesIO
-from PIL import Image
-
 class mp3downloader:
 
     def __init__(self):
@@ -107,7 +104,7 @@ class mp3downloader:
             time.sleep(1)
 
             pag.typewrite([char for char in 'mp3gain'] + ['enter'], interval=0.1)
-            time.sleep(1)
+            time.sleep(2.5)
 
             # Add file
             pag.click(40, 80)
@@ -116,7 +113,7 @@ class mp3downloader:
             # Select file
             if i == 0:
                 pag.click(500, 95)
-                pag.typewrite([char for char in self.root_dir] + ['enter'], interval=0.1)
+                pag.typewrite([char for char in self.root_dir] + ['enter'], interval=0.05)
                 time.sleep(.5)
 
             pag.click(330, 530)
